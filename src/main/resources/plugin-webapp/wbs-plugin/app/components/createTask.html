@@ -1,0 +1,30 @@
+<script type="text/ng-template" id="createTask">
+        <div class="modal-header">
+			<h3 class="modal-title" id="modal-title">Criar Tarefa</h3>
+		</div>
+		<div class="modal-body" id="modal-body">
+			<form id="criarTarefa-form">
+				<div class="form-group">
+					<label for="nomeTarefa">Nome da Tarefa</label>
+					<input type="text" class="form-control" id="nomeTarefa">
+				</div>
+				<div class="form-group">
+					<label for="tipoTarefa">Tipo da Tarefa</label>
+					<select class=form-control" id="tipoTarefa" ng-options="tipoTarefa.name for tipoTarefa in tiposTarefa track by tipoTarefa.id" ng-model="tarefaSelecionada">
+					</select>
+				</div>
+				<div class="form-group">
+					<label for="dataPlanejadaInicio">Data Planejada Inicio</label>
+					<input type="date" class="form-control" id="dataPlanejadaInicio">
+				</div>	
+				<div class="form-group">
+					<label for="dataPlanejadaFim">Data Planejada Fim</label>
+					<input type="date" class="form-control" id="dataPlanejadaFim">
+				</div>	
+			</form>
+		</div>
+		<div class="modal-footer" id="modal-footer">
+			<button type="submit" class="btn btn-primary" ng-click="save()">Salvar</button>  
+			<button type="fecharPopup" class="btn btn-primary" ng-click="cancel()">Cancelar</button>
+		</div>
+</script>

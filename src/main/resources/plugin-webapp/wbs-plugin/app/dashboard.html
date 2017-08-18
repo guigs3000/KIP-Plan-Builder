@@ -1,0 +1,18 @@
+<ng-include src="'./../../../api/cockpit/plugin/wbs-plugin/static/app/components/createPlan.html'"></ng-include>
+<ng-include src="'./../../../api/cockpit/plugin/wbs-plugin/static/app/components/createTask.html'"></ng-include>
+
+<div>
+	<h1>
+		KIP Plan Builder&nbsp;&nbsp;
+	</h1>
+	<div>
+		<div id="processTab" ng-controller="processesController" select="handleTabClick('processes')">
+			<h4>Planos de Projeto&nbsp;</h4><hr/>
+			<div class="col-md-12" ng-include src="'./../../../api/cockpit/plugin/wbs-plugin/static/app/components/processesTab.html'"></div>
+		</div>
+		<div id="tasksTab" ng-controller="tasksController" select="handleTabClick('cases')" style="display:none">
+		   <h4>Validar Plano de Projeto&nbsp;</h4><hr/>
+		   <div class="col-md-12" ng-include="'/camunda/api/cockpit/plugin/wbs-plugin/static/app/components/tasksTab.html'"></div>
+		</div>
+	</div>
+</div>

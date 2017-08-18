@@ -1,0 +1,22 @@
+<script type="text/ng-template" id="createPlan">
+        <div class="modal-header">
+			<h3 class="modal-title" id="modal-title">Criar Plano de Projeto</h3>
+		</div>
+		<div class="modal-body" id="modal-body">
+			<form id="criarPlano-form">
+				<div class="form-group">
+					<label for="nomePlano">Nome do Plano</label>
+					<input type="text" class="form-control" id="nomePlano" >
+				</div>
+				<div class="form-group">
+					<label for="processoDefinido">Selecione um Processo</label>
+					<select id="processDefinition" ng-options="processo for processo in processDefinitions track by processo" ng-model="processoSelecionado">
+					</select>
+				</div>
+			</form>
+		</div>
+		<div class="modal-footer" id="modal-footer">
+			<button type="submit" class="btn btn-primary" ng-click="save()">Salvar</button>  
+			<button type="fecharPopup" class="btn btn-primary" ng-click="cancel()">Cancelar</button>
+		</div>
+</script>

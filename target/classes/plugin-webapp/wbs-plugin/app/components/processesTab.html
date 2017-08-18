@@ -1,0 +1,15 @@
+
+<div class="row">
+	<div class="tile col-xs-12 col-sm-6 col-md-4 col-lg-2 ng-scope" ng-repeat="plano in planosProjeto">
+	<a ng-click="carregarPlanoProjeto(plano.name)">
+		<h4 class="tile-header">{{plano.name}}</h4>
+		<div class="tile-body" cam-widget-cmmn-viewer diagram-data='plano.xml'></div>
+		<span class="tile-footer"></span>
+		</div>
+	</a>
+	</div>
+	
+</div>
+<div class="row">
+	<button class="btn btn-primary" ng-click="openCriarPlanoProjeto()">Criar Plano</button>
+</div>

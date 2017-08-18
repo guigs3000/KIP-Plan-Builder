@@ -1,0 +1,17 @@
+C:\Users\guigs\workspace\wbs-plugin\src\main\java\org\camunda\bpm\cockpit\plugin\wbs\CmmnApi.java
+C:\Users\guigs\workspace\wbs-plugin\src\main\java\org\camunda\bpm\cockpit\plugin\wbs\resources\CreateProjectPlanTaskResource.java
+C:\Users\guigs\workspace\wbs-plugin\src\main\java\org\camunda\bpm\cockpit\plugin\wbs\resources\ProjectPlanTasksResource.java
+C:\Users\guigs\workspace\wbs-plugin\src\main\java\org\camunda\bpm\cockpit\plugin\wbs\NodeParser.java
+C:\Users\guigs\workspace\wbs-plugin\src\main\java\org\camunda\bpm\cockpit\plugin\wbs\dto\ProjectPlan.java
+C:\Users\guigs\workspace\wbs-plugin\src\main\java\org\camunda\bpm\cockpit\plugin\wbs\XmlParser.java
+C:\Users\guigs\workspace\wbs-plugin\src\main\java\org\camunda\bpm\cockpit\plugin\wbs\resources\WbsPluginRootResource.java
+C:\Users\guigs\workspace\wbs-plugin\src\main\java\org\camunda\bpm\cockpit\plugin\wbs\resources\CreateProjectPlanResource.java
+C:\Users\guigs\workspace\wbs-plugin\src\main\java\org\camunda\bpm\cockpit\plugin\wbs\resources\ProcessDefinitionTasksResource.java
+C:\Users\guigs\workspace\wbs-plugin\src\main\java\org\camunda\bpm\cockpit\plugin\wbs\dto\PlanItem.java
+C:\Users\guigs\workspace\wbs-plugin\src\main\java\org\camunda\bpm\cockpit\plugin\wbs\resources\DeleteProjectPlanTaskResource.java
+C:\Users\guigs\workspace\wbs-plugin\src\main\java\org\camunda\bpm\cockpit\plugin\wbs\WbsPlugin.java
+C:\Users\guigs\workspace\wbs-plugin\src\main\java\org\camunda\bpm\cockpit\plugin\wbs\resources\ProcessDefinitionResource.java
+C:\Users\guigs\workspace\wbs-plugin\src\main\java\org\camunda\bpm\cockpit\plugin\wbs\dto\Tarefa.java
+C:\Users\guigs\workspace\wbs-plugin\src\main\java\org\camunda\bpm\cockpit\plugin\wbs\dto\ProcessDefinition.java
+C:\Users\guigs\workspace\wbs-plugin\src\main\java\org\camunda\bpm\cockpit\plugin\wbs\XmlFileFilter.java
+C:\Users\guigs\workspace\wbs-plugin\src\main\java\org\camunda\bpm\cockpit\plugin\wbs\resources\GetProjectPlanNamesResource.java
