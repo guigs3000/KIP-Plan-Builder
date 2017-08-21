@@ -1,6 +1,7 @@
 package org.camunda.bpm.cockpit.plugin.wbs.dto;
 
 import java.util.HashMap;
+import java.util.Map;
 
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
@@ -23,23 +24,12 @@ public class PlanItem {
 		NamedNodeMap taskAttributes = node.getAttributes();
 		HashMap<String, String> attributes = new HashMap<String, String>();
 		attributes = NodeParser.getTaskAttributes(taskAttributes);
-		
+
 		id = attributes.get("id");
 		defReference = attributes.get("definitionRef");
+		
 		required = false;
-		NodeList list = node.getChildNodes();
-		for(int i=0; i < list.getLength(); i++){
-			Node filho = list.item(i);
-			if(filho.getNodeName()== "cmmn:entryCriterion"){
-				NamedNodeMap filhoAttributes = filho.getAttributes();
-				HashMap<String, String> filhoAttributesDict = new HashMap<String, String>();
-				filhoAttributesDict = NodeParser.getTaskAttributes(taskAttributes);
-				sentryRef = filhoAttributesDict.get("sentryRef");
-			}else if(filho.getNodeName() == "cmmn:requiredRule"){
-				required = true;
-			}
-			
-		}
+		
 	}
 
 }

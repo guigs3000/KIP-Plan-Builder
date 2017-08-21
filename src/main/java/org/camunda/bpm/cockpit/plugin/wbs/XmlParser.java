@@ -32,6 +32,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+import org.xml.sax.Attributes;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
@@ -75,16 +76,23 @@ public class XmlParser {
 	
 	public List<String> getCorrelatedProcesses() throws XPathExpressionException{
 		
-		NodeList list = ProcessDocument.getElementsByTagName("cmmn:case"); 
+		 
 		List<String> novaLista = new ArrayList<String>();
+		XPathFactory xpathFactory = XPathFactory.newInstance();		
+		XPath xpath = xpathFactory.newXPath();
 		
-		if(list.getLength() > 0){
-			NamedNodeMap taskAttributes = list.item(0).getAttributes();
-			HashMap<String, String> attributes = new HashMap<String, String>();
-			attributes = NodeParser.getTaskAttributes(taskAttributes);
-			String id = attributes.get("id");
-			novaLista.add(id);
-		}
+		XPathExpression expr = xpath.compile("//*[local-name()='case']/@id");
+		String ids = (String) expr.evaluate(ProcessDocument, XPathConstants.STRING);
+		novaLista = Arrays.asList(ids.split(";"));
+		//
+		//NodeList list = ProcessDocument.getElementsByTagName("cmmn:case");
+		//if(list.getLength() > 0){
+		//	NamedNodeMap taskAttributes = list.item(0).getAttributes();
+		//	HashMap<String, String> attributes = new HashMap<String, String>();
+		//	attributes = NodeParser.getTaskAttributes(taskAttributes);
+		//	String id = attributes.get("id");
+		//	novaLista.add(id);
+		//}
 		
 		return novaLista;
 	}
@@ -171,15 +179,17 @@ public class XmlParser {
 	
 	public List<String> extrairRequiredTasks() throws XPathExpressionException{
 		LOGGER.info("--------------------Extrair Tasks----------------------");
+		
+		List<String> RequiredTasks = new ArrayList<String>();
+		
 		XPathFactory xpathFactory = XPathFactory.newInstance();		
 		XPath xpath = xpathFactory.newXPath();
 		
 		XPathExpression expr = xpath.compile("//*[local-name()='planItem']//*[local-name()='requiredRule']/../..");
+		 
 		NodeList list= (NodeList) expr.evaluate(ProcessDocument, XPathConstants.NODESET);
-		LOGGER.info("resultado de xpath: " + list.getLength());
-		List<String> RequiredTasks = new ArrayList();
+		
 		for(int i = 0; i < list.getLength() ; i++){
-			LOGGER.info("iteracao");
 			NamedNodeMap taskAttributes = list.item(i).getAttributes();
 			HashMap<String, String> attributes = new HashMap<String, String>();
 			attributes = NodeParser.getTaskAttributes(taskAttributes);
@@ -194,29 +204,46 @@ public class XmlParser {
 	}
 	
 	public HashMap<String, List<String>> extrairSequenceFlow() throws XPathExpressionException{
+		LOGGER.info("-----------------------------Sequence Flow---------------------------------");
 		HashMap<String, List<String>> Dependencias = new HashMap<String, List<String>>();
 		
 		XPathFactory xpathFactory = XPathFactory.newInstance();
 		XPath xpath = xpathFactory.newXPath();
-		XPathExpression expr = xpath.compile("//cmmn:planItem//cmmn:entryCriterion/..");
+		XPathExpression expr = xpath.compile("//*[local-name()='planItem']//*[local-name()='entryCriterion']/..");
 		NodeList list= (NodeList) expr.evaluate(ProcessDocument, XPathConstants.NODESET);
 		
 		for(int i = 0; i < list.getLength() ; i++){
 			Node node = list.item(i);
 			PlanItem planItem = new PlanItem(node);
+			LOGGER.info(planItem.id);
+			
+			XPathExpression expr3 = xpath.compile("//*[local-name()='planItem'][@id='"+planItem.id+"']//*[local-name()='requiredRule']");
+			NodeList entry= (NodeList) expr.evaluate(node, XPathConstants.NODESET);
+			if(entry.getLength() > 0){
+				planItem.required = true;
+			}
+			
+			XPathExpression expr4 = xpath.compile("//*[local-name()='planItem'][@id='"+planItem.id+"']//*[local-name()='entryCriterion']/@sentryRef");
+			planItem.sentryRef = (String) expr.evaluate(node, XPathConstants.STRING);
+			
 			if(planItem.sentryRef != null){
-				XPathExpression expr2 = xpath.compile("//cmmn:sentry[@id='" + planItem.sentryRef + "']/@sourceRef");
-				String id = (String) expr2.evaluate(ProcessDocument, XPathConstants.STRING);
-				List<String> novasDependencias = Arrays.asList(id);
-				LOGGER.info(planItem.sentryRef + " : " + id);
-				List<String> antigasDependencias = Dependencias.get(planItem.sentryRef);
-				if(antigasDependencias == null){
-					Dependencias.put(planItem.sentryRef, novasDependencias );
-				}else{
-					antigasDependencias.add(id);
+				XPathExpression expr2 = xpath.compile("//*[local-name()='sentry'][@id='" + planItem.sentryRef + "']//*[local-name()='planItemOnPart']");
+				NodeList novasDependencias = (NodeList) expr2.evaluate(ProcessDocument, XPathConstants.NODESET);
+				List<String> antigasDependencias = new ArrayList<String>();
+				for(int j = 0 ; j < novasDependencias.getLength(); j++){
+					NamedNodeMap taskAttributes = novasDependencias.item(j).getAttributes();
+					HashMap<String, String> attributes = new HashMap<String, String>();
+					attributes = NodeParser.getTaskAttributes(taskAttributes);
+					String sourceRef = attributes.get("sourceRef");
+					LOGGER.info(sourceRef);
+					if(sourceRef != null)
+						antigasDependencias.add(sourceRef);
 				}
+				
+				Dependencias.put(planItem.sentryRef, antigasDependencias);
 			}
 		}
+		
 		return Dependencias;
 	}
 	
