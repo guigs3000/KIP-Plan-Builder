@@ -19,10 +19,10 @@
 	        <tbody>
 	            <tr ng-repeat="tarefa in PlanoProjeto.tasks">
 					<td>{{tarefa.name}}</td>
-					<td></td>
+					<td>{{tarefa.info.taskType}}</td>
 					<td></td>
 					<td>{{tarefa.info.plannedStartDate}}</td>
-					<td></td>
+					<td>{{tarefa.info.plannedEndDate}}<btn class="btn btn-primary" ng-click="deleteTask(PlanoProjeto.name, tarefa.id)">X</btn></td>
 				</tr>
 	        </tbody>
 	    </table>

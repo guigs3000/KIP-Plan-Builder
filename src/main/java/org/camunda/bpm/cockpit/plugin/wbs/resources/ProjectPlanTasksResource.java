@@ -60,7 +60,7 @@ public class ProjectPlanTasksResource extends AbstractPluginResource{
 	public List<Tarefa> getTasksFromProcessDefinition(String idProcesso) throws ParserConfigurationException, SAXException, IOException, XPathExpressionException{
 		ProcessEngine processEngine = ProcessEngines.getProcessEngine(this.engineName);
 		RepositoryService repositoryService = processEngine.getRepositoryService();
-		InputStream processo = repositoryService.getProcessModel(idProcesso);
+		InputStream processo = repositoryService.getCaseModel(idProcesso);
 		byte[] xmlByte = IoUtil.readInputStream(processo, "processo");
 		String xml = new String(xmlByte, "UTF-8");
 		

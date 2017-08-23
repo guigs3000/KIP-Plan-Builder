@@ -72,10 +72,8 @@ public class CreateProjectPlanResource extends AbstractPluginResource{
 		InputStream processo = repositoryService.getCaseModel(IdProcesso);
 		byte[] xmlByte = IoUtil.readInputStream(processo, "processo");
 		String xmlString = new String(xmlByte, "UTF-8");
-		XmlParser xmlParser = new XmlParser(xmlString);
 		LOGGER.info("processo Escolhido: \n" + xmlString);
-		xmlParser.extrairRequiredTasks();
-		xmlParser.extrairSequenceFlow();
+		
 		if(!IdProcesso.isEmpty() && !NomePlano.isEmpty() && !cmmnFile.exists()){
 			/*ProcessEngine processEngine = ProcessEngines.getProcessEngine(engineName);
 			RepositoryService repositoryService = processEngine.getRepositoryService();
@@ -99,22 +97,29 @@ public class CreateProjectPlanResource extends AbstractPluginResource{
 			
 			File cmmnFile = new File(basePath + "\\" + NomePlano + ".bpmn");
 			Cmmn.writeModelToFile(cmmnFile, cmmn);*/
-			/*String xml = String.format(
+			String xml = String.format(
 					"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
 					"<cmmn:definitions xmlns:dc=\"http://www.omg.org/spec/CMMN/20151109/DC\" xmlns:di=\"http://www.omg.org/spec/CMMN/20151109/DI\" xmlns:cmmndi=\"http://www.omg.org/spec/CMMN/20151109/CMMNDI\" xmlns:cmmn=\"http://www.omg.org/spec/CMMN/20151109/MODEL\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:camunda=\"http://camunda.org/schema/1.0/cmmn\" id=\"Test\" targetNamespace=\"http://bpmn.io/schema/cmmn\" exporter=\"Camunda Modeler\" exporterVersion=\"1.6.0\">\n" + 
 					"<cmmn:case id=\"%s\">\n"+
+					"<cmmn:casePlanModel id=\"CasePlanModel_1\" name=\"%s\">"+      
+					"</cmmn:casePlanModel>" +
 					"</cmmn:case>\n" + 
 					"<cmmndi:CMMNDI>" + 
 				    "<cmmndi:CMMNDiagram id=\"\">"+
 				    "<cmmndi:Size xsi:type=\"dc:Dimension\" width=\"500\" height=\"500\" />"+
+				    "<cmmndi:CMMNShape cmmnElementRef=\"CasePlanModel_1\" id=\"DI_CasePlanModel_1\">" +
+			        "<dc:Bounds height=\"389\" width=\"534\" x=\"332\" y=\"54\"/>"+
+			        "<cmmndi:CMMNLabel/>" +
+			        "</cmmndi:CMMNShape>" +
 				    "</cmmndi:CMMNDiagram>"+
 				    "</cmmndi:CMMNDI>"+
-					"</cmmn:definitions>", IdProcesso);
-			Files.write(cmmnFile.toPath(), Arrays.asList(xml), Charset.forName("UTF-8"));*/
+					"</cmmn:definitions>", IdProcesso, NomePlano);
+			Files.write(cmmnFile.toPath(), Arrays.asList(xml), Charset.forName("UTF-8"));
 			
+			XmlParser xmlParser = new XmlParser(xmlString);
 			
-			
-			
+			xmlParser.extrairRequiredTasks();
+			xmlParser.extrairSequenceFlow();
 		}
 	}
 }

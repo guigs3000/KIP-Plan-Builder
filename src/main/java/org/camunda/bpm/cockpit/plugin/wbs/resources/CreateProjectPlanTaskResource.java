@@ -6,6 +6,7 @@ import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
+import javax.xml.xpath.XPathExpressionException;
 
 import org.camunda.bpm.cockpit.plugin.resource.AbstractPluginResource;
 import org.camunda.bpm.cockpit.plugin.wbs.XmlParser;
@@ -25,7 +26,7 @@ public class CreateProjectPlanTaskResource extends AbstractPluginResource{
 	}
 	
 	@POST
-	public void createProjectPlanTask() throws ParserConfigurationException, SAXException, IOException, TransformerException{
+	public void createProjectPlanTask() throws ParserConfigurationException, SAXException, IOException, TransformerException, XPathExpressionException{
 		XmlParser xmlParser = new XmlParser(filepath, filename);
 		xmlParser.addTask(task);
 	}

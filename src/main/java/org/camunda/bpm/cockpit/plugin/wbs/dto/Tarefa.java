@@ -30,4 +30,9 @@ public class Tarefa {
 	public String getName(){
 		return attributes.get("name");
 	};
+	
+	public void setName(String name){
+		attributes.put("name", name);
+		this.name = name;
+	}
 }
