@@ -3,7 +3,8 @@ ngDefine('cockpit.plugin.wbs-plugin.componentsModule', [
 	'./processesController',
 	'./tasksController',
 	'./createPlanController',
-	'./createTaskCtrl'
+	'./createTaskCtrl',
+	'./relatorioPopupCtrl'
 ], 
 function(module){
 	

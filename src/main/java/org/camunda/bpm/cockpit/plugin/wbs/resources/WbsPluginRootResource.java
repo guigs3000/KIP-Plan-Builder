@@ -51,4 +51,9 @@ public class WbsPluginRootResource extends AbstractPluginRootResource{
 	public DeleteProjectPlanTaskResource deleteTask (@PathParam("engineName") String engineName, @PathParam("NomePlano") String NomePlano, @QueryParam("taskId") String taskId) throws IOException {
 		return subResource(new DeleteProjectPlanTaskResource(engineName, NomePlano, taskId), engineName);
 	}
+	
+	@Path("{engineName}/validate/{NomePlano}")
+	public ValidateResource validate(@PathParam("engineName") String engineName, @PathParam("NomePlano") String NomePlano) throws IOException {
+		return subResource(new ValidateResource(engineName, NomePlano), engineName);
+	}
 }

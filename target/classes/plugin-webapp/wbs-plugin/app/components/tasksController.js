@@ -41,8 +41,26 @@ ngDefine('cockpit.plugin.wbs-plugin.componentsModule', function(module){
 			DataFactory.deleteTask(obj);
 		};
 		
-		$scope.gerarRelatorio = function(){
-			
+		$scope.gerarRelatorio = function(NomePlano){
+			DataFactory.validate(NomePlano).then(function(response){
+				var modalInstance = $modal.open({
+					templateUrl: 'relatorioPopup',
+					controller: 'relatorioPopupCtrl',
+					size: 'lg',
+					resolve: {
+						inconformidades: function(){
+							return response.data;
+						}
+					}
+				});
+				modalInstance.result.then(function () {
+
+				}, function () {
+
+				});
+				
+
+			});
 		};
 		
 	}]);

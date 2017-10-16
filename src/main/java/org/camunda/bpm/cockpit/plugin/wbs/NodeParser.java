@@ -18,7 +18,7 @@ public class NodeParser {
 		    String name = attr.getName();
 		    String value = attr.getValue();
 		    map.put(name, value);
-		    LOGGER.info(name + ":" + value);
+		    //LOGGER.info(name + ":" + value);
 		}
 		
 		return map;

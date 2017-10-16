@@ -44,10 +44,16 @@ public class ValidateResource extends AbstractPluginResource{
 	
 	
 	@GET
-	public void validate() throws IOException, ParserConfigurationException, SAXException, XPathExpressionException, ParseException{
-		List<String> requiredTasks = new ArrayList<String>();
-		HashMap<String, List<String>> Dependencias = new HashMap<String, List<String>>();
+	public List<String> validate() throws IOException, ParserConfigurationException, SAXException, XPathExpressionException, ParseException{
 		
+		List<String> inconformidades = new ArrayList<String>();
+		
+		//Lista de tarefas que devem ser executadas de acordo com definicao do modelo cmmn
+		List<String> requiredTasks = new ArrayList<String>();
+		//dict de tarefas que possuem dependencias de acordo com definicao do modelo cmmn
+		HashMap<String, List<String>> dependencias = new HashMap<String, List<String>>();
+		
+		//Busca o id dos processos correlacionados com plano de projeto.
 		XmlParser planoProjetoXml = new XmlParser(basePath, NomePlano);
 		ProjectPlan planoDeProjeto = new ProjectPlan();
 		planoDeProjeto.baseProcessIds = planoProjetoXml.getCorrelatedProcesses();
@@ -55,6 +61,8 @@ public class ValidateResource extends AbstractPluginResource{
 		ProcessEngine processEngine = ProcessEngines.getProcessEngine(engineName);
 		RepositoryService repositoryService = processEngine.getRepositoryService();
 		
+		//Para cada processo correlacionado, busca o modelo e extrai tarefas obrigatorias e 
+		//as dependencias
 		for(int i = 0; i < planoDeProjeto.baseProcessIds.size(); i++ ){
 			String IdProcesso = planoDeProjeto.baseProcessIds.get(i);
 			InputStream processo = repositoryService.getCaseModel(IdProcesso);
@@ -62,38 +70,44 @@ public class ValidateResource extends AbstractPluginResource{
 			String xmlString = new String(xmlByte, "UTF-8");
 			XmlParser xmlParser = new XmlParser(xmlString);
 			requiredTasks.addAll(xmlParser.extrairRequiredTasks());
-			Dependencias = xmlParser.extrairSequenceFlow();	
+			dependencias = xmlParser.extrairSequenceFlow();	
 		}
 		
+		//Lista de tarefas que serao executadas de acordo com plano de projeto 
 		List<String> executedTasks = new ArrayList<String>();
+		//Dict com tipo da tarefa e suas informacoes
 		HashMap<String, Tarefa> tarefasPlanejadas = planoProjetoXml.getTaskMap();
 		
-		for(int i =0; i < tarefasPlanejadas.size(); i++){
-			Tarefa tarefa = tarefasPlanejadas.get(i);
+		//verifica se dependencias foram obedecidas
+		for(Map.Entry<String, Tarefa> entry: tarefasPlanejadas.entrySet()){
+			Tarefa tarefa = entry.getValue();
 			executedTasks.add(tarefa.info.taskType);
-			if(Dependencias.containsKey(tarefa.info.taskType)){
-				List<String> tarefasDependentes = Dependencias.get(tarefa.info.taskType);
-				for(int j = 0; j < tarefasDependentes.size(); j++){
+			if(dependencias.containsKey(tarefa.info.taskType)){
+				List<String> tarefasPredecessoras = dependencias.get(tarefa.info.taskType);
+				for(int j = 0; j < tarefasPredecessoras.size(); j++){
 					Tarefa tarefaPlanejada = tarefasPlanejadas.get(tarefa.info.taskType);
-					Tarefa tarefaDependente = tarefasPlanejadas.get(tarefasDependentes.get(j));
-					if(tarefaDependente == null){
-						LOGGER.info(tarefaPlanejada.getName() + " depende de " + tarefasDependentes.get(j) + ". \n Inconformidade: " +  tarefasDependentes.get(j) + " nao executada");
+					Tarefa tarefaPredecessora = tarefasPlanejadas.get(tarefasPredecessoras.get(j));
+					if(tarefaPredecessora == null){
+						inconformidades.add(String.format( "%s depende de %s! Inconformidade: %s não foi executada.", tarefaPlanejada.getName(),tarefasPredecessoras.get(j), tarefasPredecessoras.get(j)));
 					}else{
 						SimpleDateFormat fmt = new SimpleDateFormat("dd-MM-yyyy HH:mm");    
-						Date dataDependente = fmt.parse(tarefaDependente.info.plannedEndDate); 
-						Date dataPlanejada = fmt.parse(tarefaPlanejada.info.plannedStartDate);
-						if(dataPlanejada.before(dataDependente)){
-							LOGGER.info("Inconformidade: tarefa " + tarefaPlanejada.getName() +" foi executada antes de sua dependencia " + tarefaDependente.getName() );
+						Date dataFimTarefaPredecessora = fmt.parse(tarefaPredecessora.info.plannedEndDate); 
+						Date dataInicioTarefaPlanejada = fmt.parse(tarefaPlanejada.info.plannedStartDate);
+						if(dataInicioTarefaPlanejada.before(dataFimTarefaPredecessora)){
+							inconformidades.add(String.format("Inconformidade: tarefa %s foi executada antes de sua dependencia %s", tarefaPlanejada.getName(),tarefaPredecessora.getName()));
 						}
 					}
 				}
 			}
 		}
 		
+		//Verifica que tarefa obrigatoria nao foi executada
 		requiredTasks.removeAll(executedTasks);
 		for(int i =0; i < requiredTasks.size(); i++){
-			LOGGER.info("tarefa obrigatoria nao executada: " + requiredTasks.get(i));
+			inconformidades.add(String.format("tarefa obrigatoria nao executada: %s", requiredTasks.get(i)));
 		}
+		
+		return inconformidades;
 	}
 	
 }

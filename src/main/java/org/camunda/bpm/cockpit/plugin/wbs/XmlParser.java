@@ -51,7 +51,8 @@ public class XmlParser {
 	public String filename;
 	private final static Logger LOGGER = Logger.getLogger("wbs-plugin");
 	private File file;
-	  
+	
+	
 	public XmlParser(String xmlString) throws ParserConfigurationException, SAXException, IOException{
 		InputSource source = new InputSource(new StringReader(xmlString));
 		
@@ -127,6 +128,7 @@ public class XmlParser {
 			task.attributes = NodeParser.getTaskAttributes(taskAttributes);
 			task.info.plannedStartDate = task.attributes.get("dataPlanejadaInicio");
 			task.info.plannedEndDate = task.attributes.get("dataPlanejadaFim");
+			task.info.taskType = task.attributes.get("tipoTarefa");
 			tarefas.put(task.info.taskType, task);
 		}
 		return tarefas;
@@ -259,7 +261,7 @@ public class XmlParser {
 			XPathExpression expr6 = xpath.compile("//*[@id='"+defReference+"']/@name");
 			String nomeTask = (String) expr6.evaluate(ProcessDocument, XPathConstants.STRING);
 			if(!defReference.isEmpty()){
-				RequiredTasks.add(nomeTask);
+				RequiredTasks.add(defReference);
 				LOGGER.info("tarefas required: " + defReference);
 			}
 				
@@ -269,15 +271,15 @@ public class XmlParser {
 	
 	public HashMap<String, List<String>> extrairSequenceFlow() throws XPathExpressionException{
 		LOGGER.info("-----------------------------Sequence Flow---------------------------------");
-		HashMap<String, List<String>> Dependencias = new HashMap<String, List<String>>();
+		HashMap<String, List<String>> dependencias = new HashMap<String, List<String>>();
 		
 		XPathFactory xpathFactory = XPathFactory.newInstance();
 		XPath xpath = xpathFactory.newXPath();
 		XPathExpression expr = xpath.compile("//*[local-name()='planItem']//*[local-name()='entryCriterion']/..");
-		NodeList list= (NodeList) expr.evaluate(ProcessDocument, XPathConstants.NODESET);
+		NodeList itensWithEntryCriterion= (NodeList) expr.evaluate(ProcessDocument, XPathConstants.NODESET);
 		
-		for(int i = 0; i < list.getLength() ; i++){
-			Node node = list.item(i);
+		for(int i = 0; i < itensWithEntryCriterion.getLength() ; i++){
+			Node node = itensWithEntryCriterion.item(i);
 			PlanItem planItem = new PlanItem(node);
 			LOGGER.info(planItem.id);
 			
@@ -286,29 +288,29 @@ public class XmlParser {
 			
 			XPathExpression expr5 = xpath.compile("//*[local-name()='planItem'][@id='"+planItem.id+"']/@definitionRef");
 			String defReference = (String) expr5.evaluate(ProcessDocument, XPathConstants.STRING);
-			XPathExpression expr6 = xpath.compile("//*[@id='"+defReference+"']/@name");
-			String nomeTask = (String) expr6.evaluate(ProcessDocument, XPathConstants.STRING);
+//			XPathExpression expr6 = xpath.compile("//*[@id='"+defReference+"']/@name");
+//			String nomeTask = (String) expr6.evaluate(ProcessDocument, XPathConstants.STRING);
 			
 			if(planItem.sentryRef != null){
 				XPathExpression expr2 = xpath.compile("//*[local-name()='sentry'][@id='" + planItem.sentryRef + "']//*[local-name()='planItemOnPart']");
-				NodeList novasDependencias = (NodeList) expr2.evaluate(ProcessDocument, XPathConstants.NODESET);
-				List<String> antigasDependencias = new ArrayList<String>();
-				for(int j = 0 ; j < novasDependencias.getLength(); j++){
-					NamedNodeMap taskAttributes = novasDependencias.item(j).getAttributes();
+				NodeList tarefasPredecessoras = (NodeList) expr2.evaluate(ProcessDocument, XPathConstants.NODESET);
+				List<String> listaTarefasPredecessoras = new ArrayList<String>();
+				for(int j = 0 ; j < tarefasPredecessoras.getLength(); j++){
+					NamedNodeMap taskAttributes = tarefasPredecessoras.item(j).getAttributes();
 					HashMap<String, String> attributes = new HashMap<String, String>();
 					attributes = NodeParser.getTaskAttributes(taskAttributes);
 					String sourceRef = attributes.get("sourceRef");
-					XPathExpression expr7 = xpath.compile("//*[@id='"+sourceRef+"']/@name");
-					String nomeTaskDependente = (String) expr7.evaluate(ProcessDocument, XPathConstants.STRING);
-					if(nomeTaskDependente != null)
-						antigasDependencias.add(nomeTaskDependente);
+					XPathExpression expr7 = xpath.compile("//*[@id='"+sourceRef+"']/@definitionRef");
+					String idTarefaPredecessora= (String) expr7.evaluate(ProcessDocument, XPathConstants.STRING);
+					if(sourceRef!= null)
+						listaTarefasPredecessoras.add(idTarefaPredecessora);
 				}
 				
-				Dependencias.put(nomeTask, antigasDependencias);
+				dependencias.put(defReference, listaTarefasPredecessoras);
 			}
 		}
 		
-		return Dependencias;
+		return dependencias;
 	}
 	
 }

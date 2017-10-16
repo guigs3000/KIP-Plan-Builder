@@ -47,7 +47,7 @@ ngDefine('cockpit.plugin.wbs-plugin.servicesModule', function(module){
 			});
 		}
 		
-		DataFactory.validate = function(){
+		DataFactory.validate = function(NomePlano){
 			return $http.get(Uri.appUri("plugin://wbs-plugin/:engine/validate/" + NomePlano))
 			.success(function(data){
 				
