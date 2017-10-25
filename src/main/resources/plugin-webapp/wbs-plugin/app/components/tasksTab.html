@@ -11,7 +11,7 @@
 	            <tr class="filters">
 		            <th>Nome</th>
 					<th>Tipo da Tarefa</th>
-					<th>Iteracao</th>
+					<th>Nome Tarefa na definicao</th>
 					<th>Data planejada de Inicio</th>
 					<th>Data planejada de Fim</th>
 	            </tr>
@@ -20,7 +20,7 @@
 	            <tr ng-repeat="tarefa in PlanoProjeto.tasks">
 					<td>{{tarefa.name}}</td>
 					<td>{{tarefa.info.taskType}}</td>
-					<td></td>
+					<td>{{tarefa.info.nickname}}</td>
 					<td>{{tarefa.info.plannedStartDate}}</td>
 					<td>{{tarefa.info.plannedEndDate}}<btn class="btn btn-primary" ng-click="deleteTask(PlanoProjeto.name, tarefa.id)">X</btn></td>
 				</tr>
@@ -30,6 +30,7 @@
 	</div>
 	<button class="btn btn-primary" ng-click="openCriarTarefa()">Criar Tarefa</button>
 	<button class="btn btn-primary" ng-click="gerarRelatorio(PlanoProjeto.name)">Gerar Relatorio Nao Conformidade</button>
+	<button class="btn btn-primary" ng-click="deploy(PlanoProjeto.name)">Deploy</button>
 </div>
 
 <style>

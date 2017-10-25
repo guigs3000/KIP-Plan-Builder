@@ -10,6 +10,7 @@ public class Tarefa {
 		public String plannedStartDate;
 		public String plannedEndDate;
 		public String taskType;
+		public String nickname;
 	}
 	private String id;
 

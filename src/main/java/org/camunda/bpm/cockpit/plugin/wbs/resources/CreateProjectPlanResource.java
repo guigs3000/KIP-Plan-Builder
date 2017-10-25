@@ -72,54 +72,19 @@ public class CreateProjectPlanResource extends AbstractPluginResource{
 		InputStream processo = repositoryService.getCaseModel(IdProcesso);
 		byte[] xmlByte = IoUtil.readInputStream(processo, "processo");
 		String xmlString = new String(xmlByte, "UTF-8");
-		LOGGER.info("processo Escolhido: \n" + xmlString);
 		
+		//String guid = NomePlano + java.util.UUID.randomUUID().toString();
 		if(!IdProcesso.isEmpty() && !NomePlano.isEmpty() && !cmmnFile.exists()){
-			/*ProcessEngine processEngine = ProcessEngines.getProcessEngine(engineName);
-			RepositoryService repositoryService = processEngine.getRepositoryService();
-			InputStream BpmnInput = repositoryService.getProcessModel(IdProcesso);
-			LOGGER.info(BpmnInput.toString());
-			modelInstance = Bpmn.readModelFromStream(BpmnInput);
-			List<Attribute<?>> atributosProcesso = modelInstance.getModel().getType(Process.class).getAttributes();
-			ModelElementType start = modelInstance.getModel().getType(StartEvent.class);
-			ModelElementType end = modelInstance.getModel().getType(EndEvent.class);
-			
-			
-			CmmnModelInstance cmmn = Cmmn.createEmptyModel();
-			org.camunda.bpm.model.cmmn.instance.Definitions definitions = cmmn.newInstance(Definitions.class);
-			definitions.setTargetNamespace("http://camunda.org/examples");
-			cmmn.setDefinitions(definitions);
-			
-			Case caseElement = modelInstance.newInstance(Case.class);
-			LocalDate localDate = LocalDate.now();
-			caseElement.setId(IdProcesso + localDate.toString());
-			definitions.addChildElement(caseElement);
-			
-			File cmmnFile = new File(basePath + "\\" + NomePlano + ".bpmn");
-			Cmmn.writeModelToFile(cmmnFile, cmmn);*/
 			String xml = String.format(
 					"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
-					"<cmmn:definitions xmlns:dc=\"http://www.omg.org/spec/CMMN/20151109/DC\" xmlns:di=\"http://www.omg.org/spec/CMMN/20151109/DI\" xmlns:cmmndi=\"http://www.omg.org/spec/CMMN/20151109/CMMNDI\" xmlns:cmmn=\"http://www.omg.org/spec/CMMN/20151109/MODEL\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:camunda=\"http://camunda.org/schema/1.0/cmmn\" id=\"Test\" targetNamespace=\"http://bpmn.io/schema/cmmn\" exporter=\"Camunda Modeler\" exporterVersion=\"1.6.0\">\n" + 
-					"<cmmn:case id=\"%s\">\n"+
+					"<cmmn:definitions xmlns:wbsbuilder=\"wbsplugin\" xmlns:dc=\"http://www.omg.org/spec/CMMN/20151109/DC\" xmlns:di=\"http://www.omg.org/spec/CMMN/20151109/DI\" xmlns:cmmndi=\"http://www.omg.org/spec/CMMN/20151109/CMMNDI\" xmlns:cmmn=\"http://www.omg.org/spec/CMMN/20151109/MODEL\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:camunda=\"http://camunda.org/schema/1.0/cmmn\" id=\"Test\" targetNamespace=\"http://bpmn.io/schema/cmmn\" exporter=\"Camunda Modeler\" exporterVersion=\"1.6.0\">\n" + 
+					"<cmmn:case id=\"%s\" wbsbuilder:id=\"%s\">\n"+
 					"<cmmn:casePlanModel id=\"CasePlanModel_1\" name=\"%s\">"+      
 					"</cmmn:casePlanModel>" +
 					"</cmmn:case>\n" + 
-					"<cmmndi:CMMNDI>" + 
-				    "<cmmndi:CMMNDiagram id=\"\">"+
-				    "<cmmndi:Size xsi:type=\"dc:Dimension\" width=\"500\" height=\"500\" />"+
-				    "<cmmndi:CMMNShape cmmnElementRef=\"CasePlanModel_1\" id=\"DI_CasePlanModel_1\">" +
-			        "<dc:Bounds height=\"389\" width=\"534\" x=\"332\" y=\"54\"/>"+
-			        "<cmmndi:CMMNLabel/>" +
-			        "</cmmndi:CMMNShape>" +
-				    "</cmmndi:CMMNDiagram>"+
-				    "</cmmndi:CMMNDI>"+
-					"</cmmn:definitions>", IdProcesso, NomePlano);
+					"</cmmn:definitions>", NomePlano, IdProcesso, NomePlano);
 			Files.write(cmmnFile.toPath(), Arrays.asList(xml), Charset.forName("UTF-8"));
 			
-			XmlParser xmlParser = new XmlParser(xmlString);
-			
-			xmlParser.extrairRequiredTasks();
-			xmlParser.extrairSequenceFlow();
 		}
 	}
 }

@@ -38,12 +38,13 @@ public class WbsPluginRootResource extends AbstractPluginRootResource{
 	}
 	
 	@Path("{engineName}/createTask/{NomePlano}")
-	public CreateProjectPlanTaskResource createTask (@PathParam("engineName") String engineName, @PathParam("NomePlano") String NomePlano, 	@QueryParam("taskName") String taskName, @QueryParam("taskInicio") String taskInicio, @QueryParam("taskFim") String taskFim, @QueryParam("taskTipo") String taskTipo) throws IOException {
+	public CreateProjectPlanTaskResource createTask (@PathParam("engineName") String engineName, @PathParam("NomePlano") String NomePlano, 	@QueryParam("taskName") String taskName, @QueryParam("taskInicio") String taskInicio, @QueryParam("taskFim") String taskFim, @QueryParam("taskTipo") String taskTipo, @QueryParam("taskNickname") String taskNickname) throws IOException {
 		Tarefa task = new Tarefa();
 		task.setName(taskName);
 		task.info.plannedStartDate = taskInicio;
 		task.info.plannedEndDate = taskFim;
 		task.info.taskType = taskTipo;
+		task.info.nickname = taskNickname;
 		return subResource(new CreateProjectPlanTaskResource(engineName, NomePlano, task), engineName);
 	}
 	
@@ -55,5 +56,10 @@ public class WbsPluginRootResource extends AbstractPluginRootResource{
 	@Path("{engineName}/validate/{NomePlano}")
 	public ValidateResource validate(@PathParam("engineName") String engineName, @PathParam("NomePlano") String NomePlano) throws IOException {
 		return subResource(new ValidateResource(engineName, NomePlano), engineName);
+	}
+	
+	@Path("{engineName}/deploy/{NomePlano}")
+	public DeployResource deploy(@PathParam("engineName") String engineName, @PathParam("NomePlano") String NomePlano) throws IOException {
+		return subResource(new DeployResource(engineName, NomePlano), engineName);
 	}
 }

@@ -34,7 +34,7 @@ ngDefine('cockpit.plugin.wbs-plugin.servicesModule', function(module){
 		}
 		
 		DataFactory.createTask = function(plano){
-			return $http.post(Uri.appUri("plugin://wbs-plugin/:engine/createTask/" + plano.Nome +"?taskName=" + plano.taskName + "&taskInicio="  + plano.taskInicio + "&taskFim=" + plano.taskFim + "&taskTipo=" + plano.taskTipo ))
+			return $http.post(Uri.appUri("plugin://wbs-plugin/:engine/createTask/" + plano.Nome +"?taskName=" + plano.taskName + "&taskInicio="  + plano.taskInicio + "&taskFim=" + plano.taskFim + "&taskTipo=" + plano.taskTipo + "&taskNickname=" + plano.nickname ))
 			.success(function(data){
 				
 			});
@@ -54,6 +54,16 @@ ngDefine('cockpit.plugin.wbs-plugin.servicesModule', function(module){
 			});
 		}
 		
+		DataFactory.deploy = function(NomePlano){
+			return $http.get(Uri.appUri("plugin://wbs-plugin/:engine/deploy/" + NomePlano))
+			.success(function(data){
+				console.log(data);
+				$http.post("http://localhost:8080/engine-rest/case-definition/" + data + "/create", JSON.stringify({}))
+				.success(function(data2){
+					
+				});
+			});
+		}
 		return DataFactory;
 	}]);
 });

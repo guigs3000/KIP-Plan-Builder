@@ -38,7 +38,12 @@ ngDefine('cockpit.plugin.wbs-plugin.componentsModule', function(module){
 		
 		$scope.deleteTask = function(nome, tarefaId){
 			var obj = {"Nome": nome, "taskId": tarefaId};
-			DataFactory.deleteTask(obj);
+			DataFactory.deleteTask(obj).then(function(response){
+				DataFactory.getTasks(nome).then(function(response){
+					$rootScope.$emit("planoSelecionado", response.data);
+				});
+			});
+			
 		};
 		
 		$scope.gerarRelatorio = function(NomePlano){
@@ -59,8 +64,13 @@ ngDefine('cockpit.plugin.wbs-plugin.componentsModule', function(module){
 
 				});
 				
+				
 
 			});
+		};
+		
+		$scope.deploy = function(nomePlano){
+			DataFactory.deploy(nomePlano);
 		};
 		
 	}]);
