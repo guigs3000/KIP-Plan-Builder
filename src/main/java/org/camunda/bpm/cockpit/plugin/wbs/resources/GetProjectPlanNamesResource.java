@@ -24,7 +24,12 @@ import org.camunda.bpm.cockpit.plugin.wbs.XmlParser;
 import org.camunda.bpm.cockpit.plugin.wbs.dto.ProcessDefinition;
 import org.camunda.bpm.cockpit.plugin.wbs.dto.ProjectPlan;
 import org.camunda.bpm.cockpit.plugin.wbs.dto.Tarefa;
+import org.camunda.bpm.engine.ProcessEngine;
+import org.camunda.bpm.engine.ProcessEngines;
+import org.camunda.bpm.engine.RepositoryService;
 import org.camunda.bpm.engine.impl.util.IoUtil;
+import org.camunda.bpm.engine.repository.CaseDefinition;
+import org.camunda.bpm.model.cmmn.CmmnModelInstance;
 import org.xml.sax.SAXException;
 import org.apache.commons.lang.StringEscapeUtils;
 
@@ -41,17 +46,21 @@ public class GetProjectPlanNamesResource extends AbstractPluginResource{
 	
 	
 	@GET
-	public List<ProjectPlan> getProjectPlanNames() throws IOException, ParserConfigurationException, SAXException{
+	public List<ProjectPlan> getProjectPlanNames() throws IOException, ParserConfigurationException, SAXException, XPathExpressionException{
 		File dir = new File(basePath);
 		LOGGER.info("\n filepath: " + basePath);
 		List<String> nomes = new ArrayList<String>();
 		List<ProjectPlan> planosDeProjeto = new ArrayList<ProjectPlan>();
 		XmlFileFilter filter = new XmlFileFilter();
 		
+		ProcessEngine processEngine = ProcessEngines.getProcessEngine(engineName);
+		RepositoryService repositoryService = processEngine.getRepositoryService();
 
 		if(dir.exists()){
 			nomes = Arrays.asList(dir.list(filter));
 			for(int i =0 ; i < nomes.size(); i++){
+				
+				
 				String fileName = nomes.get(i);
 				LOGGER.info("\n filename: " + fileName);
 
@@ -59,7 +68,13 @@ public class GetProjectPlanNamesResource extends AbstractPluginResource{
 				ProjectPlan plano = new ProjectPlan();
 				plano.name = fileName;
 
-				plano.xml = myParser.getXml();
+				List<String> idProcessos = myParser.getCorrelatedProcesses();
+
+				InputStream xmlInputStream= repositoryService.getCaseModel(idProcessos.get(0));
+				byte[] xmlByte = IoUtil.readInputStream(xmlInputStream, fileName);
+				String xml = new String(xmlByte, "UTF-8");
+				
+				plano.xml = xml;
 				LOGGER.info(plano.xml);
 				planosDeProjeto.add(plano);
 			}

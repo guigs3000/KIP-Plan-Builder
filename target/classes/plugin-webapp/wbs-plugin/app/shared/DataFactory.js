@@ -1,6 +1,6 @@
 ngDefine('cockpit.plugin.wbs-plugin.servicesModule', function(module){
 	
-	module.factory('DataFactory', ["$http", "Uri", "$rootScope", "$q", function($http, Uri, $rootScope, $q){
+	module.factory('DataFactory', ["$http", "Uri", "$rootScope", "$q", "$location", function($http, Uri, $rootScope, $q, $location){
 		var DataFactory ={};
 		
 		DataFactory.processDefinitions = [];
@@ -55,10 +55,11 @@ ngDefine('cockpit.plugin.wbs-plugin.servicesModule', function(module){
 		}
 		
 		DataFactory.deploy = function(NomePlano){
+			var url = $location.protocol()+"://"+$location.host()+":"+$location.port()+"/engine-rest/case-definition/";
+
 			return $http.get(Uri.appUri("plugin://wbs-plugin/:engine/deploy/" + NomePlano))
 			.success(function(data){
-				console.log(data);
-				$http.post("http://localhost:8080/engine-rest/case-definition/" + data + "/create", JSON.stringify({}))
+				$http.post(url + data + "/create", JSON.stringify({}))
 				.success(function(data2){
 					
 				});

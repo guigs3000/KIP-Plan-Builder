@@ -72,7 +72,7 @@ public class CreateProjectPlanResource extends AbstractPluginResource{
 		InputStream processo = repositoryService.getCaseModel(IdProcesso);
 		byte[] xmlByte = IoUtil.readInputStream(processo, "processo");
 		String xmlString = new String(xmlByte, "UTF-8");
-		
+		String id = NomePlano.replaceAll("\\s+", "_");
 		//String guid = NomePlano + java.util.UUID.randomUUID().toString();
 		if(!IdProcesso.isEmpty() && !NomePlano.isEmpty() && !cmmnFile.exists()){
 			String xml = String.format(
@@ -82,7 +82,7 @@ public class CreateProjectPlanResource extends AbstractPluginResource{
 					"<cmmn:casePlanModel id=\"CasePlanModel_1\" name=\"%s\">"+      
 					"</cmmn:casePlanModel>" +
 					"</cmmn:case>\n" + 
-					"</cmmn:definitions>", NomePlano, IdProcesso, NomePlano);
+					"</cmmn:definitions>", id, IdProcesso, NomePlano);
 			Files.write(cmmnFile.toPath(), Arrays.asList(xml), Charset.forName("UTF-8"));
 			
 		}

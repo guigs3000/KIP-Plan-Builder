@@ -48,13 +48,11 @@ public class DeployResource extends AbstractPluginResource{
 		deployBuilder.name(nome);
 		deployBuilder.addInputStream(nomePlano, xmlParser.readFile(basePath + "\\" + nomePlano));
 		deployBuilder.deploy();
-		
+		nome = nome.replaceAll("\\s+","_");
+		LOGGER.info(nome);
 		List<CaseDefinition> casos = repositoryService.createCaseDefinitionQuery().caseDefinitionKey(nome).orderByCaseDefinitionVersion().asc().list();
 		return casos.get(0).getId();
-		//instanceBuilder.execute();
-//		InputStream processo = repositoryService.getCaseModel(IdProcesso);
-//		byte[] xmlByte = IoUtil.readInputStream(processo, "processo");
-//		String xmlString = new String(xmlByte, "UTF-8");
+
 		
 		
 	}

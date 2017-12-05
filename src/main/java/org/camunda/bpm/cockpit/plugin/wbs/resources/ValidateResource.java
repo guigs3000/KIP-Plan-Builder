@@ -88,13 +88,13 @@ public class ValidateResource extends AbstractPluginResource{
 					Tarefa tarefaPlanejada = tarefasPlanejadas.get(tarefa.info.taskType);
 					Tarefa tarefaPredecessora = tarefasPlanejadas.get(tarefasPredecessoras.get(j).getId());
 					if(tarefaPredecessora == null){
-						inconformidades.add(String.format( "'%s' depende de '%s'! Inconformidade: '%s' não foi executada.", tarefaPlanejada.getName(),tarefasPredecessoras.get(j).getName(), tarefasPredecessoras.get(j).getName()));
+						inconformidades.add(String.format( "'%s' depende de '%s'! Inconformidade: '%s' não foi planejada.", tarefaPlanejada.getName(),tarefasPredecessoras.get(j).getName(), tarefasPredecessoras.get(j).getName()));
 					}else{
 						SimpleDateFormat fmt = new SimpleDateFormat("dd-MM-yyyy HH:mm");    
 						Date dataFimTarefaPredecessora = fmt.parse(tarefaPredecessora.info.plannedEndDate); 
 						Date dataInicioTarefaPlanejada = fmt.parse(tarefaPlanejada.info.plannedStartDate);
 						if(dataInicioTarefaPlanejada.before(dataFimTarefaPredecessora)){
-							inconformidades.add(String.format("Inconformidade: tarefa '%s' foi executada antes de sua dependencia '%s'", tarefaPlanejada.getName(),tarefaPredecessora.getName()));
+							inconformidades.add(String.format("Inconformidade: tarefa '%s' foi planejada para execução antes de sua dependencia '%s'", tarefaPlanejada.getName(),tarefaPredecessora.getName()));
 						}
 					}
 				}
@@ -104,7 +104,7 @@ public class ValidateResource extends AbstractPluginResource{
 		//Verifica que tarefa obrigatoria nao foi executada
 		for(Map.Entry<String, Tarefa> entry: requiredTasks.entrySet()){
 			if(!executedTasks.contains(entry.getKey())){
-				inconformidades.add(String.format("tarefa obrigatoria nao executada: '%s'", entry.getValue().getName()));	
+				inconformidades.add(String.format("tarefa obrigatoria não planejada: '%s'", entry.getValue().getName()));	
 			}
 		}
 		
